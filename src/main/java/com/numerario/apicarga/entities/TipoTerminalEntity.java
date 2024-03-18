@@ -15,8 +15,9 @@ public class TipoTerminalEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "PA", nullable = false)
-    private int pa;
+    @ManyToOne
+    @JoinColumn(name = "IDUNIDADEINST", nullable = false) // PA
+    private PontosAtendimentoEntity pontosAtendimento;
 
     @Column(name = "CODIGO", nullable = false, unique = true)
     private int codigo;

@@ -17,7 +17,6 @@ import java.util.List;
 @Service
 public class POServiceExcelUtils {
 
-
     private UnidadesNegocioRepository unidadesNegocioRepository;
 
     @Autowired
@@ -54,7 +53,6 @@ public class POServiceExcelUtils {
                             break;
                     }
                 }
-
                 var pointOfService = PontosAtendimentoEntity.builder()
                         .nomeUnidade(nomeUnidade)
                         .idUnidadeInst(idUnidadeInst)

@@ -25,11 +25,9 @@ public class MovimentacoesPontosAtendimentoEntity {
     @JoinColumn(name = "AG_PA_TERM", referencedColumnName = "NUMTERMINAL")
     private TerminaisEntity terminaisEntity;
 
-    @Column(name = "IDGRUPODOCAIXA", nullable = false)
-    private int idGrupoDoCaixa;
-
-    @Column(name = "IDOPERACAOCAIXA", nullable = false)
-    private int idOperacaoCaixa;
+    @ManyToOne
+    @JoinColumn(name = "IDTIPOOPERACAO", referencedColumnName = "ID")
+    private TiposOperacaoEntity tiposOperacaoEntity;
 
     @Column(name = "HISTORICO",nullable = false)
     private int historico;

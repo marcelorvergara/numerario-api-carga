@@ -47,7 +47,7 @@ public class PointsOfService {
         }
         Blob blob = bucket.get(POINTSOFSERVICE);
         if (blob == null) {
-            throw new BucketNotFoundException("File:" + POINTSOFSERVICE.split("/")[1] +  " not found");
+            throw new BucketNotFoundException("File:" + POINTSOFSERVICE.split("/")[1] + " not found");
         }
 
         byte[] content = blob.getContent();
