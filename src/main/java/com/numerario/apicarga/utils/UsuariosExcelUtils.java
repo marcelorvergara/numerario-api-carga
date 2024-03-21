@@ -3,12 +3,13 @@ package com.numerario.apicarga.utils;
 import com.numerario.apicarga.entities.UsuariosEntity;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class UsuariosExcelUtils {
 
     public List<UsuariosEntity> readExcelUsersSheet(byte[] excelData, int sheetNumber, int[] desiredColumns) {

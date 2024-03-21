@@ -42,7 +42,7 @@ public class TiposTerminalExcelUtils {
                             pa = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
                             int finalPa = pa;
                             pontosAtendimentoEntity = this.pontosAtendimentoRepository.findByIdUnidadeInst(pa)
-                                    .orElseThrow(() -> new EntityNotFoundException("Point of Service not found with id: " + finalPa));
+                                    .orElseThrow(() -> new EntityNotFoundException("Ponto de atendimento com o id: : " + finalPa + " não encontrado"));
                             break;
                         case 1:
                             codigo = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);

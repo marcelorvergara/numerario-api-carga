@@ -20,7 +20,7 @@ public class TerminaisEntity {
     @JoinColumn(name = "IDUNIDADEINST", referencedColumnName = "IDUNIDADEINST")
     private PontosAtendimentoEntity pontosAtendimentoEntity;
 
-    @Column(name ="NUMTERMINAL", nullable = false, unique = true)
+    @Column(name ="NUMTERMINAL", nullable = false)
     private int numTerminal;
 
     @ManyToOne

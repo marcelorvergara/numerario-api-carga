@@ -1,7 +1,9 @@
 package com.numerario.apicarga.controllers;
 
 
+import com.numerario.apicarga.entities.TerminaisEntity;
 import com.numerario.apicarga.services.PontosAtendimentoService;
+import com.numerario.apicarga.services.TerminaisService;
 import com.numerario.apicarga.services.TipoTerminalService;
 import com.numerario.apicarga.services.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class ConstantsLoadController {
 
     @Autowired
     TipoTerminalService tipoTerminalService;
+
+    @Autowired
+    TerminaisService terminaisService;
 
     @GetMapping("/load-users")
     public ResponseEntity<Object> loadUsersFromFile() {
@@ -56,9 +61,12 @@ public class ConstantsLoadController {
     }
 
     @GetMapping("/load-terminals")
-    public ResponseEntity<String> loadTerminalsFromFile() {
-//        int[] desiredTerminalsColumns = {2, 4, 5, 7};
-//        List<TerminalsEntity> terminalsExcelData = excelUtils.readExcelFile(content, 3, desiredTerminalsColumns);
-        return null;
+    public ResponseEntity<Object> loadTerminalsFromFile() {
+        try{
+            var resultTerminalService = this.terminaisService.executeTerminals();
+            return ResponseEntity.status(HttpStatus.OK).body("Foram inseridos: " + resultTerminalService.size() + " terminais");
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

@@ -9,9 +9,11 @@ import com.numerario.apicarga.repositories.TerminaisRepository;
 import com.numerario.apicarga.utils.TerminaisExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TerminaisService {
 
     private static final String TERMINALS = "constantes/TERMINAL.xlsx";
@@ -25,17 +27,17 @@ public class TerminaisService {
     @Autowired
     private TerminaisRepository terminaisRepository;
 
-    public void executeTerminals() {
-        TerminaisExcelUtils terminaisExcelUtils = new TerminaisExcelUtils();
+    @Autowired
+    TerminaisExcelUtils terminaisExcelUtils;
+
+    public List<TerminaisEntity> executeTerminals() {
 
         byte[] content = getBytes();
 
-        int[] desiredTerminalsColumns = {2, 4, 5, 7};
+        int[] desiredTerminalsColumns = {2, 4, 5, 7, 26, 27};
         List<TerminaisEntity> terminalsExcelData = terminaisExcelUtils.readExcelTerminalsSheet(content, 0, desiredTerminalsColumns);
 
-        for(var term: terminalsExcelData) {
-            System.out.println(term);
-        }
+        return this.terminaisRepository.saveAll(terminalsExcelData);
     }
 
     private byte[] getBytes() {
@@ -45,7 +47,7 @@ public class TerminaisService {
         }
         Blob blob = bucket.get(TERMINALS);
         if (blob == null) {
-            throw new BucketNotFoundException("File:" + TERMINALS +  " not found");
+            throw new BucketNotFoundException("File:" + TERMINALS + " not found");
         }
 
         byte[] content = blob.getContent();
