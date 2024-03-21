@@ -1,14 +1,12 @@
 package com.numerario.apicarga.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Entity(name = "Usuarios")
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 public class UsuariosEntity {

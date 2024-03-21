@@ -9,6 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UsuariosExcelUtils {
 
@@ -16,40 +18,51 @@ public class UsuariosExcelUtils {
         List<UsuariosEntity> userList = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(excelData))) {
             Sheet sheet = workbook.getSheetAt(sheetNumber);
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0 || row == null) continue;
-
-                String userId = "";
-                int unitInstituteUser = 0;
-                String descNameUser = "";
-
-                for (int cn : desiredColumns) {
-                    Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                    switch (cn) {
-                        case 3:
-                            userId = cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
-                            break;
-                        case 5:
-                            unitInstituteUser = (int) (cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                        case 6:
-                            descNameUser = cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
-                            break;
-                    }
+            sheet.forEach(row -> {
+                if (row.getRowNum() > 0) {
+                    processRowForUser(row, desiredColumns).ifPresent(userList::add);
                 }
-                var user = UsuariosEntity.builder()
-                        .idUsuario(userId)
-                        .idUnidadeInstUsuario(unitInstituteUser)
-                        .descUserName(descNameUser)
-                        .build();
-                userList.add(user);
-            }
-            return userList;
+            });
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return userList;
     }
+
+    private Optional<UsuariosEntity> processRowForUser(Row row, int[] desiredColumns) {
+        String userId = "";
+        int unitInstituteUser = 0;
+        String descNameUser = "";
+
+        for (int cn : desiredColumns) {
+            Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            switch (cn) {
+                case 3:
+                    userId = extractStringValue(cell);
+                    break;
+                case 5:
+                    unitInstituteUser = extractIntegerValue(cell);
+                    break;
+                case 6:
+                    descNameUser = extractStringValue(cell);
+                    break;
+            }
+        }
+        return Optional.of(UsuariosEntity.builder()
+                .idUsuario(userId)
+                .idUnidadeInstUsuario(unitInstituteUser)
+                .descUserName(descNameUser)
+                .build());
+    }
+
+    private String extractStringValue(Cell cell) {
+        return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
+    }
+
+    private int extractIntegerValue(Cell cell) {
+        return (int) (cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
+    }
+
 
 }
 

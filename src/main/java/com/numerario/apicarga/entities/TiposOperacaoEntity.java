@@ -23,11 +23,14 @@ public class TiposOperacaoEntity {
     @Column(name = "Operacao", nullable = false)
     private String operacao;
 
-    @Column(name = "Descricao", nullable = false)
-    private String descricao;
+    @Column(name = "DescricaoOperacao", nullable = false)
+    private String descricaoOperacao;
 
     @Column(name = "Historico", nullable = false)
     private int historico;
+
+    @Column(name = "DescricaoHistorico", nullable = false)
+    private String descricaoHistorico;
 
     @Column(name = "Sensibilizacao", nullable = false)
     private String sensibilizacao;

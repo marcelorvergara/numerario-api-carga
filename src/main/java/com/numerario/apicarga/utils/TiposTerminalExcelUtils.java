@@ -27,50 +27,59 @@ public class TiposTerminalExcelUtils {
             Sheet sheet = workbook.getSheetAt(sheetNumber);
             for (Row row : sheet) {
                 if (row.getRowNum() == 0 || row == null) continue;
-
-                int pa = 0;
-                int codigo = 0;
-                String descricao = "";
-                int LIM_SUPERIOR = 0;
-                int LIM_INFERIOR = 0;
-                PontosAtendimentoEntity pontosAtendimentoEntity = null;
-
-                for (int cn : desiredColumns) {
-                    Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                    switch (cn) {
-                        case 0:
-                            pa = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            int finalPa = pa;
-                            pontosAtendimentoEntity = this.pontosAtendimentoRepository.findByIdUnidadeInst(pa)
-                                    .orElseThrow(() -> new EntityNotFoundException("Ponto de atendimento com o id: : " + finalPa + " não encontrado"));
-                            break;
-                        case 1:
-                            codigo = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                        case 2:
-                            descricao = cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
-                            break;
-                        case 3:
-                            LIM_SUPERIOR = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                        case 4:
-                            LIM_INFERIOR = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                    }
+                TipoTerminalEntity terminalType = processRow(row, desiredColumns);
+                if (terminalType != null) {
+                    terminalTypesList.add(terminalType);
                 }
-                var terminalType = TipoTerminalEntity.builder()
-                        .pontosAtendimento(pontosAtendimentoEntity)
-                        .codigo(codigo)
-                        .descricao(descricao)
-                        .limSuperior(BigDecimal.valueOf(LIM_SUPERIOR))
-                        .limInferior(BigDecimal.valueOf(LIM_INFERIOR))
-                        .build();
-                terminalTypesList.add(terminalType);
             }
-            return terminalTypesList;
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return terminalTypesList;
     }
+
+    private TipoTerminalEntity processRow(Row row, int[] desiredColumns) {
+        int pa = 0, codigo = 0, LIM_SUPERIOR = 0, LIM_INFERIOR = 0;
+        String descricao = "";
+        PontosAtendimentoEntity pontosAtendimentoEntity = null;
+
+        for (int cn : desiredColumns) {
+            Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            switch (cn) {
+                case 0:
+                    pa = (int) Math.round(cell.getNumericCellValue());
+                    pontosAtendimentoEntity = fetchPontosAtendimento(pa);
+                    break;
+                case 1:
+                    codigo = (int) Math.round(cell.getNumericCellValue());
+                    break;
+                case 2:
+                    descricao = cell.getStringCellValue();
+                    break;
+                case 3:
+                    LIM_SUPERIOR = (int) Math.round(cell.getNumericCellValue());
+                    break;
+                case 4:
+                    LIM_INFERIOR = (int) Math.round(cell.getNumericCellValue());
+                    break;
+            }
+        }
+        return createTipoTerminalEntity(pontosAtendimentoEntity, codigo, descricao, LIM_SUPERIOR, LIM_INFERIOR);
+    }
+
+    private PontosAtendimentoEntity fetchPontosAtendimento(int pa) {
+        return this.pontosAtendimentoRepository.findByIdUnidadeInst(pa)
+                .orElseThrow(() -> new EntityNotFoundException("Ponto de atendimento com o id: : " + pa + " não encontrado"));
+    }
+
+    private TipoTerminalEntity createTipoTerminalEntity(PontosAtendimentoEntity pontosAtendimento, int codigo, String descricao, int LIM_SUPERIOR, int LIM_INFERIOR) {
+        return TipoTerminalEntity.builder()
+                .pontosAtendimento(pontosAtendimento)
+                .codigo(codigo)
+                .descricao(descricao)
+                .limSuperior(BigDecimal.valueOf(LIM_SUPERIOR))
+                .limInferior(BigDecimal.valueOf(LIM_INFERIOR))
+                .build();
+    }
+
 }
