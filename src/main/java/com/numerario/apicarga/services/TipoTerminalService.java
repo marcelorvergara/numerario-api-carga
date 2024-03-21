@@ -5,8 +5,8 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.numerario.apicarga.entities.TipoTerminalEntity;
 import com.numerario.apicarga.exceptions.BucketNotFoundException;
-import com.numerario.apicarga.repositories.TerminalsTypesRepository;
-import com.numerario.apicarga.utils.TerminalsTypesExcelUtils;
+import com.numerario.apicarga.repositories.TiposTerminalRepository;
+import com.numerario.apicarga.utils.TiposTerminalExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TerminalsTypesService {
-    private static final String TERMINALSTYPES = "constantes/TIPOS_TERMINAL.xlsx";
+public class TipoTerminalService {
+    private static final String TERMINALSTYPES = "constantes/iniciais/TIPOS_TERMINAL.xlsx";
 
     @Autowired
     private Storage storage;
@@ -24,19 +24,19 @@ public class TerminalsTypesService {
     private String bucketName;
 
     @Autowired
-    private TerminalsTypesExcelUtils terminalsTypesExcelUtils;
+    private TiposTerminalExcelUtils tiposTerminalExcelUtils;
 
     @Autowired
-    private TerminalsTypesRepository terminalsTypesRepository;
+    private TiposTerminalRepository tiposTerminalRepository;
 
     public List<TipoTerminalEntity> executeTypeOfTerminals() {
 
         byte[] content = getBytes();
 
         int[] desiredUsersColumns = {0,1,2,3,4};
-        List<TipoTerminalEntity> terminalsTypesServiceResult = terminalsTypesExcelUtils.readExcelTerminalTypesSheet(content, 0, desiredUsersColumns);
+        List<TipoTerminalEntity> terminalsTypesServiceResult = tiposTerminalExcelUtils.readExcelTerminalTypesSheet(content, 0, desiredUsersColumns);
 
-        return this.terminalsTypesRepository.saveAll(terminalsTypesServiceResult);
+        return this.tiposTerminalRepository.saveAll(terminalsTypesServiceResult);
     }
 
     private byte[] getBytes() {

@@ -5,14 +5,14 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.numerario.apicarga.entities.TerminaisEntity;
 import com.numerario.apicarga.exceptions.BucketNotFoundException;
-import com.numerario.apicarga.repositories.TerminalsRepository;
-import com.numerario.apicarga.utils.TerminalsExcelUtils;
+import com.numerario.apicarga.repositories.TerminaisRepository;
+import com.numerario.apicarga.utils.TerminaisExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
-public class TerminalsService {
+public class TerminaisService {
 
     private static final String TERMINALS = "constantes/TERMINAL.xlsx";
 
@@ -23,15 +23,15 @@ public class TerminalsService {
     private String bucketName;
 
     @Autowired
-    private TerminalsRepository terminalsRepository;
+    private TerminaisRepository terminaisRepository;
 
     public void executeTerminals() {
-        TerminalsExcelUtils terminalsExcelUtils = new TerminalsExcelUtils();
+        TerminaisExcelUtils terminaisExcelUtils = new TerminaisExcelUtils();
 
         byte[] content = getBytes();
 
         int[] desiredTerminalsColumns = {2, 4, 5, 7};
-        List<TerminaisEntity> terminalsExcelData = terminalsExcelUtils.readExcelTerminalsSheet(content, 0, desiredTerminalsColumns);
+        List<TerminaisEntity> terminalsExcelData = terminaisExcelUtils.readExcelTerminalsSheet(content, 0, desiredTerminalsColumns);
 
         for(var term: terminalsExcelData) {
             System.out.println(term);

@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class POServiceExcelUtils {
+public class PontosAtendimentoExcelUtils {
 
     private UnidadesNegocioRepository unidadesNegocioRepository;
 
     @Autowired
-    public POServiceExcelUtils(UnidadesNegocioRepository unidadesNegocioRepository) {
+    public PontosAtendimentoExcelUtils(UnidadesNegocioRepository unidadesNegocioRepository) {
         this.unidadesNegocioRepository = unidadesNegocioRepository;
     }
 
@@ -61,9 +61,8 @@ public class POServiceExcelUtils {
                 pointsOfServiceList.add(pointOfService);
             }
             return pointsOfServiceList;
-        } catch (
-                IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         return pointsOfServiceList;
     }

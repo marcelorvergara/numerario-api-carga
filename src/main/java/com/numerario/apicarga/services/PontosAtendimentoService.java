@@ -5,8 +5,8 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.numerario.apicarga.entities.PontosAtendimentoEntity;
 import com.numerario.apicarga.exceptions.BucketNotFoundException;
-import com.numerario.apicarga.repositories.PointsOfServiceRepository;
-import com.numerario.apicarga.utils.POServiceExcelUtils;
+import com.numerario.apicarga.repositories.PontosAtendimentoRepository;
+import com.numerario.apicarga.utils.PontosAtendimentoExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PointsOfService {
+public class PontosAtendimentoService {
 
     private static final String POINTSOFSERVICE = "constantes/UNIDADEINSTITUICAO.xlsx";
 
@@ -25,19 +25,19 @@ public class PointsOfService {
     private String bucketName;
 
     @Autowired
-    private POServiceExcelUtils poServiceExcelUtils;
+    private PontosAtendimentoExcelUtils pontosAtendimentoExcelUtils;
 
     @Autowired
-    private PointsOfServiceRepository pointsOfServiceRepository;
+    private PontosAtendimentoRepository pontosAtendimentoRepository;
 
     public List<PontosAtendimentoEntity> executePointsOfService() {
 
         byte[] content = getBytes();
 
         int[] desiredUsersColumns = {1, 3, 7};
-        List<PontosAtendimentoEntity> pointsOfServiceResult = poServiceExcelUtils.readExcelPointsOfServiceSheet(content, 0, desiredUsersColumns);
+        List<PontosAtendimentoEntity> pointsOfServiceResult = pontosAtendimentoExcelUtils.readExcelPointsOfServiceSheet(content, 0, desiredUsersColumns);
 
-        return this.pointsOfServiceRepository.saveAll(pointsOfServiceResult);
+        return this.pontosAtendimentoRepository.saveAll(pointsOfServiceResult);
     }
 
     private byte[] getBytes() {

@@ -22,7 +22,7 @@ public class MovimentacoesPontosAtendimentoEntity {
     private Date data;
 
     @ManyToOne
-    @JoinColumn(name = "AG_PA_TERM", referencedColumnName = "NUMTERMINAL")
+    @JoinColumn(name = "IDTERMINAL", referencedColumnName = "ID")
     private TerminaisEntity terminaisEntity;
 
     @ManyToOne

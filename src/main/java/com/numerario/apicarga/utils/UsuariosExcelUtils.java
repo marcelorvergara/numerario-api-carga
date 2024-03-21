@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersExcelUtils {
+public class UsuariosExcelUtils {
 
     public List<UsuariosEntity> readExcelUsersSheet(byte[] excelData, int sheetNumber, int[] desiredColumns) {
         List<UsuariosEntity> userList = new ArrayList<>();
@@ -44,9 +44,8 @@ public class UsersExcelUtils {
                 userList.add(user);
             }
             return userList;
-        } catch (
-                IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         return userList;
     }

@@ -1,6 +1,5 @@
 package com.numerario.apicarga.utils;
 
-import com.numerario.apicarga.entities.PontosAtendimentoEntity;
 import com.numerario.apicarga.entities.TerminaisEntity;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TerminalsExcelUtils {
+public class TerminaisExcelUtils {
 
     public List<TerminaisEntity> readExcelTerminalsSheet(byte[] excelData, int sheetNumber, int[] desiredColumns) {
         List<TerminaisEntity> terminalsList = new ArrayList<>();
@@ -50,9 +49,8 @@ public class TerminalsExcelUtils {
 //                terminalsList.add(terminal);
             }
             return terminalsList;
-        } catch (
-                IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         return terminalsList;
     }

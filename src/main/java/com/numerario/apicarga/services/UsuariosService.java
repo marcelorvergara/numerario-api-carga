@@ -3,13 +3,10 @@ package com.numerario.apicarga.services;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
-import com.numerario.apicarga.entities.TerminaisEntity;
 import com.numerario.apicarga.entities.UsuariosEntity;
 import com.numerario.apicarga.exceptions.BucketNotFoundException;
-import com.numerario.apicarga.repositories.TerminalsRepository;
-import com.numerario.apicarga.repositories.UsersRepository;
-import com.numerario.apicarga.utils.TerminalsExcelUtils;
-import com.numerario.apicarga.utils.UsersExcelUtils;
+import com.numerario.apicarga.repositories.UsuariosRepository;
+import com.numerario.apicarga.utils.UsuariosExcelUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UsersService {
+public class UsuariosService {
 
     private static final String USERS = "constantes/Base de Usuários e Terminais Atuailzada.xlsx";
     @Autowired
@@ -27,17 +24,17 @@ public class UsersService {
     private String bucketName;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UsuariosRepository usuariosRepository;
 
     public List<UsuariosEntity> executeUsers() {
-        UsersExcelUtils usersExcelUtils = new UsersExcelUtils();
+        UsuariosExcelUtils usuariosExcelUtils = new UsuariosExcelUtils();
 
         byte[] content = getBytes();
 
         int[] desiredUsersColumns = {3, 5, 6};
-        List<UsuariosEntity> usersExcelData = usersExcelUtils.readExcelUsersSheet(content, 0, desiredUsersColumns);
+        List<UsuariosEntity> usersExcelData = usuariosExcelUtils.readExcelUsersSheet(content, 0, desiredUsersColumns);
 
-        return this.usersRepository.saveAll(usersExcelData);
+        return this.usuariosRepository.saveAll(usersExcelData);
     }
 
     private byte[] getBytes() {

@@ -2,7 +2,7 @@ package com.numerario.apicarga.utils;
 
 import com.numerario.apicarga.entities.PontosAtendimentoEntity;
 import com.numerario.apicarga.entities.TipoTerminalEntity;
-import com.numerario.apicarga.repositories.PointsOfServiceRepository;
+import com.numerario.apicarga.repositories.PontosAtendimentoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,11 +14,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
-public class TerminalsTypesExcelUtils {
+public class TiposTerminalExcelUtils {
 
     @Autowired
-    PointsOfServiceRepository pointsOfServiceRepository;
+    PontosAtendimentoRepository pontosAtendimentoRepository;
 
     public List<TipoTerminalEntity> readExcelTerminalTypesSheet(byte[] excelData, int sheetNumber, int[] desiredColumns) {
         List<TipoTerminalEntity> terminalTypesList = new ArrayList<>();
@@ -40,7 +41,7 @@ public class TerminalsTypesExcelUtils {
                         case 0:
                             pa = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
                             int finalPa = pa;
-                            pontosAtendimentoEntity =  this.pointsOfServiceRepository.findByIdUnidadeInst(pa)
+                            pontosAtendimentoEntity = this.pontosAtendimentoRepository.findByIdUnidadeInst(pa)
                                     .orElseThrow(() -> new EntityNotFoundException("Point of Service not found with id: " + finalPa));
                             break;
                         case 1:
@@ -67,9 +68,8 @@ public class TerminalsTypesExcelUtils {
                 terminalTypesList.add(terminalType);
             }
             return terminalTypesList;
-        } catch (
-                IOException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
         return terminalTypesList;
     }
