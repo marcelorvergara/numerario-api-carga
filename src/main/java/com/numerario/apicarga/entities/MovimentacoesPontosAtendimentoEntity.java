@@ -25,6 +25,15 @@ public class MovimentacoesPontosAtendimentoEntity {
     })
     private TiposOperacaoEntity tiposOperacaoEntity;
 
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "PA", referencedColumnName = "IDUNIDADEINST"),
+            @JoinColumn(name = "TERMINAL", referencedColumnName = "NUMTERMINAL"),
+            @JoinColumn(name = "TIPOTERMINAL", referencedColumnName = "IDTIPOTERMINAL"),
+            @JoinColumn(name = "usuario", referencedColumnName = "IDUSUARIO")
+    })
+    private TerminaisEntity terminaisEntity;
+
     @Column(name = "DESCRICAOOPERACAO")
     private String descOperacao;
 
@@ -34,10 +43,6 @@ public class MovimentacoesPontosAtendimentoEntity {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA", nullable = false)
     private Date data;
-
-    @ManyToOne
-    @JoinColumn(name = "IDTERMINAL", referencedColumnName = "ID")
-    private TerminaisEntity terminaisEntity;
 
     @Column(name = "VALOR", nullable = false)
     private BigDecimal valor;

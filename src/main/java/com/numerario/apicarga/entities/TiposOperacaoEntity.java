@@ -1,5 +1,6 @@
 package com.numerario.apicarga.entities;
 
+import com.numerario.apicarga.entities.composite_keys.TiposOperacaoId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

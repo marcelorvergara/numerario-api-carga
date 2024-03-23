@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.Primary;
 
 import java.math.BigDecimal;
 
@@ -15,16 +16,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Table(name = "TiposTerminal")
 public class TipoTerminalEntity {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "CODIGO", nullable = false, unique = true)
+    private int codigo;
 
     @ManyToOne
     @JoinColumn(name = "IDUNIDADEINST", nullable = false) // PA
     private PontosAtendimentoEntity pontosAtendimento;
-
-    @Column(name = "CODIGO", nullable = false, unique = true)
-    private int codigo;
 
     @Column(name = "DESCRICAO", nullable = false)
     private String descricao;

@@ -22,5 +22,4 @@ public class UsuariosEntity {
 
     @Column(name = "DESCNOMEUSUARIO")
     private String descUserName;
-
 }

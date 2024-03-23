@@ -1,7 +1,7 @@
 package com.numerario.apicarga.utils;
 
 import com.numerario.apicarga.entities.TiposOperacaoEntity;
-import com.numerario.apicarga.entities.TiposOperacaoId;
+import com.numerario.apicarga.entities.composite_keys.TiposOperacaoId;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;

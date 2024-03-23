@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 @Builder
 @Entity
-@Table(name="Terminais")
+@Table(name = "Terminais")
 public class TerminaisEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class TerminaisEntity {
     @JoinColumn(name = "IDUNIDADEINST", referencedColumnName = "IDUNIDADEINST")
     private PontosAtendimentoEntity pontosAtendimentoEntity;
 
-    @Column(name ="NUMTERMINAL", nullable = false)
+    @Column(name = "NUMTERMINAL", nullable = false)
     private int numTerminal;
 
     @ManyToOne
@@ -38,4 +38,4 @@ public class TerminaisEntity {
     private BigDecimal valorLimiteTerminal;
 
 }
-    // IDUNIDADEINST -  NUMTERMINAL - IDTIPOTERMINAL - IDUSUARIO
+// IDUNIDADEINST -  NUMTERMINAL - IDTIPOTERMINAL - IDUSUARIO
