@@ -1,6 +1,7 @@
 package com.numerario.apicarga.utils;
 
 import com.numerario.apicarga.entities.TiposOperacaoEntity;
+import com.numerario.apicarga.entities.TiposOperacaoId;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -72,12 +73,15 @@ public class TiposOperacaoExcelUtils {
     }
 
     private TiposOperacaoEntity createTiposOperacaoEntity(int idGrupoCaixa, int idOperacaoCaixa, String operacao, String descricaoOperacao, int historico, String descricaoHistorico, String sensibilizacao) {
-        return TiposOperacaoEntity.builder()
+        TiposOperacaoId tiposOperacaoId = TiposOperacaoId.builder()
                 .idGrupoCaixa(idGrupoCaixa)
                 .idOperacaoCaixa(idOperacaoCaixa)
+                .historico(historico)
+                .build();
+        return TiposOperacaoEntity.builder()
+                .id(tiposOperacaoId)
                 .operacao(operacao)
                 .descricaoOperacao(descricaoOperacao)
-                .historico(historico)
                 .descricaoHistorico(descricaoHistorico)
                 .sensibilizacao(sensibilizacao)
                 .build();

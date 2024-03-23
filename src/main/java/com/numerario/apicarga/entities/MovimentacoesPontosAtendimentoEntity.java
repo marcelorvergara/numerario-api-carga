@@ -17,6 +17,20 @@ public class MovimentacoesPontosAtendimentoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "IDGRUPOCAIXA", referencedColumnName = "idGrupoCaixa"),
+            @JoinColumn(name = "IDOPERACAOCAIXA", referencedColumnName = "idOperacaoCaixa"),
+            @JoinColumn(name = "HISTORICO", referencedColumnName = "historico")
+    })
+    private TiposOperacaoEntity tiposOperacaoEntity;
+
+    @Column(name = "DESCRICAOOPERACAO")
+    private String descOperacao;
+
+    @Column(name = "DESCRICAOHISTORICO")
+    private String descHistorico;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA", nullable = false)
     private Date data;
@@ -24,13 +38,6 @@ public class MovimentacoesPontosAtendimentoEntity {
     @ManyToOne
     @JoinColumn(name = "IDTERMINAL", referencedColumnName = "ID")
     private TerminaisEntity terminaisEntity;
-
-    @ManyToOne
-    @JoinColumn(name = "IDTIPOOPERACAO", referencedColumnName = "ID")
-    private TiposOperacaoEntity tiposOperacaoEntity;
-
-    @Column(name = "HISTORICO",nullable = false)
-    private int historico;
 
     @Column(name = "VALOR", nullable = false)
     private BigDecimal valor;

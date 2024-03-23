@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 public class TerminaisExcelUtils {
 
@@ -35,69 +36,84 @@ public class TerminaisExcelUtils {
         try (Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(excelData))) {
             Sheet sheet = workbook.getSheetAt(sheetNumber);
             for (Row row : sheet) {
-                if (row.getRowNum() <=1 || row == null) continue;
+                if (row.getRowNum() <= 1) continue;
 
-                int unidadeInstId = 0;
-                int numTerminalId = 0;
-                int terminalTypeId = 0;
-                String idUsuario = "";
-                int valLimSaque = 0;
-                int valLimiteTerminal = 0;
-                PontosAtendimentoEntity pontosAtendimentoEntity = null;
-                TipoTerminalEntity tipoTerminalEntity = null;
-                UsuariosEntity usuariosEntity = null;
-
-                for (int cn : desiredColumns) {
-                    Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                    switch (cn) {
-                        case 2:
-                            // Search in pontos atendimento entity
-                            unidadeInstId = (int) Math.round(cell.getCellType() == CellType.NUMERIC ?  cell.getNumericCellValue() : 0);
-                            int finalUnidadeInstId = unidadeInstId;
-                            pontosAtendimentoEntity = this.pontosAtendimentoRepository.findByIdUnidadeInst(finalUnidadeInstId)
-                                    .orElseThrow(() -> new EntityNotFoundException("Ponto de atendimento com o id: " + finalUnidadeInstId + " não encontrado"));
-                            break;
-                        case 4:
-                            // pk
-                            numTerminalId = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                        case 5:
-                            // Search in tipo terminal entity
-                            terminalTypeId = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() :0);
-                            int finalTerminalTypeId = terminalTypeId;
-                            tipoTerminalEntity = this.tiposTerminalRepository.findByCodigo(finalTerminalTypeId)
-                                    .orElseThrow(() -> new EntityNotFoundException("Tipo de terminal com o id: " + finalTerminalTypeId + " não encontrado"));
-                            break;
-                        case 7:
-                            // Search in usuarios entity
-                            idUsuario = (cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "");
-                            String finalIdUsuario = idUsuario;
-                            usuariosEntity = this.usuariosRepository.findByIdUsuario(finalIdUsuario);
-                            break;
-                        case 26:
-                            // Valor limite saque
-                            valLimSaque = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                        case 27:
-                            valLimiteTerminal = (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
-                            break;
-                    }
+                TerminaisEntity terminal = processRow(row, desiredColumns);
+                if (terminal != null) {
+                    terminalsList.add(terminal);
                 }
-                var terminal = TerminaisEntity.builder()
-                        .pontosAtendimentoEntity(pontosAtendimentoEntity)
-                        .numTerminal(numTerminalId)
-                        .tipoTerminalEntity(tipoTerminalEntity)
-                        .usuariosEntity(usuariosEntity)
-                        .valorLimiteSaque(BigDecimal.valueOf(valLimSaque))
-                        .valorLimiteTerminal(BigDecimal.valueOf(valLimiteTerminal))
-                        .build();
-                terminalsList.add(terminal);
             }
-            return terminalsList;
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return terminalsList;
     }
+
+    private TerminaisEntity processRow(Row row, int[] desiredColumns) {
+        PontosAtendimentoEntity pontosAtendimentoEntity = null;
+        TipoTerminalEntity tipoTerminalEntity = null;
+        UsuariosEntity usuariosEntity = null;
+        int unidadeInstId = 0, numTerminalId = 0, terminalTypeId = 0, valLimSaque = 0, valLimiteTerminal = 0;
+        String idUsuario = "";
+
+        for (int cn : desiredColumns) {
+            Cell cell = row.getCell(cn, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+            switch (cn) {
+                case 2:
+                    unidadeInstId = getNumericCellValue(cell);
+                    pontosAtendimentoEntity = findPontosAtendimento(unidadeInstId);
+                    break;
+                case 4:
+                    numTerminalId = getNumericCellValue(cell);
+                    break;
+                case 5:
+                    terminalTypeId = getNumericCellValue(cell);
+                    tipoTerminalEntity = findTipoTerminal(terminalTypeId);
+                    break;
+                case 7:
+                    idUsuario = getStringCellValue(cell);
+                    usuariosEntity = findUsuario(idUsuario);
+                    break;
+                case 26:
+                    valLimSaque = getNumericCellValue(cell);
+                    break;
+                case 27:
+                    valLimiteTerminal = getNumericCellValue(cell);
+                    break;
+            }
+        }
+
+        return TerminaisEntity.builder()
+                .pontosAtendimentoEntity(pontosAtendimentoEntity)
+                .numTerminal(numTerminalId)
+                .tipoTerminalEntity(tipoTerminalEntity)
+                .usuariosEntity(usuariosEntity)
+                .valorLimiteSaque(BigDecimal.valueOf(valLimSaque))
+                .valorLimiteTerminal(BigDecimal.valueOf(valLimiteTerminal))
+                .build();
+    }
+
+    private int getNumericCellValue(Cell cell) {
+        return (int) Math.round(cell.getCellType() == CellType.NUMERIC ? cell.getNumericCellValue() : 0);
+    }
+
+    private String getStringCellValue(Cell cell) {
+        return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
+    }
+
+    private PontosAtendimentoEntity findPontosAtendimento(int id) {
+        return this.pontosAtendimentoRepository.findByIdUnidadeInst(id)
+                .orElseThrow(() -> new EntityNotFoundException("Ponto de atendimento com o id: " + id + " não encontrado"));
+    }
+
+    private TipoTerminalEntity findTipoTerminal(int id) {
+        return this.tiposTerminalRepository.findByCodigo(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tipo de terminal com o id: " + id + " não encontrado"));
+    }
+
+    private UsuariosEntity findUsuario(String id) {
+        return this.usuariosRepository.findByIdUsuario(id);
+    }
+
 }
 
