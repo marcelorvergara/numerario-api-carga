@@ -1,7 +1,6 @@
 package com.numerario.apicarga.controllers;
 
 
-import com.numerario.apicarga.entities.TerminaisEntity;
 import com.numerario.apicarga.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +28,9 @@ public class ConstantsLoadController {
 
     @Autowired
     TiposOperacaoService tiposOperacaoService;
+
+    @Autowired
+    MovimentacoesPontosAtendimentosService movimentacoesPontosAtendimentosService;
 
     @GetMapping("/load-users")
     public ResponseEntity<Object> loadUsersFromFile() {
@@ -73,8 +75,18 @@ public class ConstantsLoadController {
     @GetMapping("load-tipos-operacao")
     public ResponseEntity<Object> loadTiposOperacaoFromFile() {
         try {
-            var resultTiposOperacao = this.tiposOperacaoService.tiposOperacaoService();
+            var resultTiposOperacao = this.tiposOperacaoService.executeTiposOperacaoService();
             return ResponseEntity.status(HttpStatus.OK).body("Foram inseridos: " + resultTiposOperacao.size() + " tipos de operacao");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("load-saldos-iniciais")
+    public ResponseEntity<Object> loadSaldosIniciaisFromFile() {
+        try {
+            var resultSaldosIniciais = this.movimentacoesPontosAtendimentosService.executeSaldosIniciais();
+            return ResponseEntity.status(HttpStatus.OK).body("Foram inseridos: " + resultSaldosIniciais.size() + " registros");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

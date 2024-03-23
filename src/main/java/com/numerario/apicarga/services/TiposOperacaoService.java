@@ -31,7 +31,7 @@ public class TiposOperacaoService {
     TiposOperacaoRepository tiposOperacaoRepository;
 
 
-    public List<TiposOperacaoEntity> tiposOperacaoService () {
+    public List<TiposOperacaoEntity> executeTiposOperacaoService() {
         byte[] content = getBytes();
 
         int[] desiredTerminalsColumns = {0,1,2,3,4,5,6};

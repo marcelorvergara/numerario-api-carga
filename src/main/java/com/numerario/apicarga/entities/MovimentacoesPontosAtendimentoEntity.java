@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -34,15 +34,9 @@ public class MovimentacoesPontosAtendimentoEntity {
     })
     private TerminaisEntity terminaisEntity;
 
-    @Column(name = "DESCRICAOOPERACAO")
-    private String descOperacao;
-
-    @Column(name = "DESCRICAOHISTORICO")
-    private String descHistorico;
-
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA", nullable = false)
-    private Date data;
+    private LocalDate data;
 
     @Column(name = "VALOR", nullable = false)
     private BigDecimal valor;
