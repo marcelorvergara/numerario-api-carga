@@ -37,6 +37,7 @@ public class TiposOperacaoService {
         int[] desiredTerminalsColumns = {0,1,2,3,4,5,6};
         List<TiposOperacaoEntity> tiposOperacaoServiceResult = tiposOperacaoExcelUtils.readExcelTiposOperacaoSheet(content, 0, desiredTerminalsColumns);
 
+        this.tiposOperacaoRepository.deleteAll();
         return this.tiposOperacaoRepository.saveAll(tiposOperacaoServiceResult);
     }
 
