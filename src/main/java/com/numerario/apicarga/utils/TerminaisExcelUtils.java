@@ -8,6 +8,8 @@ import com.numerario.apicarga.repositories.PontosAtendimentoRepository;
 import com.numerario.apicarga.repositories.TiposTerminalRepository;
 import com.numerario.apicarga.repositories.UsuariosRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Service
 public class TerminaisExcelUtils {
+
+    private static final Log LOGGER = LogFactory.getLog(TerminaisExcelUtils.class);
 
     @Autowired
     PontosAtendimentoRepository pontosAtendimentoRepository;
@@ -44,7 +48,7 @@ public class TerminaisExcelUtils {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return terminalsList;
     }

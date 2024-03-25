@@ -2,6 +2,8 @@ package com.numerario.apicarga.utils;
 
 import com.numerario.apicarga.entities.TiposOperacaoEntity;
 import com.numerario.apicarga.entities.composite_keys.TiposOperacaoId;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @Service
 public class TiposOperacaoExcelUtils {
+
+    private static final Log LOGGER = LogFactory.getLog(TiposOperacaoExcelUtils.class);
     public List<TiposOperacaoEntity> readExcelTiposOperacaoSheet(byte[] excelData, int sheetNumber, int[] desiredColumns) {
         List<TiposOperacaoEntity> tiposOperacaoList = new ArrayList<>();
         try (Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(excelData))) {
@@ -26,7 +30,7 @@ public class TiposOperacaoExcelUtils {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return tiposOperacaoList;
     }

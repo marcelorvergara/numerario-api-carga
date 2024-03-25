@@ -6,6 +6,8 @@ import com.numerario.apicarga.entities.TiposOperacaoEntity;
 import com.numerario.apicarga.repositories.MovimentacoesPontosAtendimentosRepository;
 import com.numerario.apicarga.repositories.TerminaisRepository;
 import com.numerario.apicarga.repositories.TiposOperacaoRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ import java.util.List;
 
 @Service
 public class MovimentacoesPontosAtendimentoExcelUtils {
+
+    private static final Log LOGGER = LogFactory.getLog(MovimentacoesPontosAtendimentoExcelUtils.class);
 
     private MovimentacoesPontosAtendimentosRepository movimentacoesPontosAtendimentosRepository;
 
@@ -48,7 +52,7 @@ public class MovimentacoesPontosAtendimentoExcelUtils {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return movimentacoesPontosAtendimentoEntityList;
     }
@@ -59,7 +63,7 @@ public class MovimentacoesPontosAtendimentoExcelUtils {
         String data = "";
         String terminal = "";
         int historico = 0;
-        BigDecimal valor = BigDecimal.valueOf(0.0);
+        BigDecimal valor = BigDecimal.ZERO;
         TiposOperacaoEntity tipoOperacaoEntity = null;
         TerminaisEntity terminalEntity = null;
 

@@ -34,7 +34,7 @@ public class MovimentacoesPontosAtendimentosService {
         byte[] content = getBytes();
 
         // 0-Operação(92/02/1); 4-Data; 5-Terminal(4355/011/00079); 8-Valor;
-        int[] desiredTerminalsColumns = {0, 4,5,8};
+        int[] desiredTerminalsColumns = {0, 4, 5, 8};
         int sheetCaixas = 2;
         int sheetAtms = 3;
         int sheetTesourerosEletronicos = 4;

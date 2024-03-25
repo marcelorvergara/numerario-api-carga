@@ -4,6 +4,8 @@ import com.numerario.apicarga.entities.PontosAtendimentoEntity;
 import com.numerario.apicarga.entities.UnidadesNegocioEntity;
 import com.numerario.apicarga.repositories.UnidadesNegocioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Service
 public class PontosAtendimentoExcelUtils {
+
+    private static final Log LOGGER = LogFactory.getLog(PontosAtendimentoExcelUtils.class);
 
     private UnidadesNegocioRepository unidadesNegocioRepository;
 
@@ -62,7 +66,7 @@ public class PontosAtendimentoExcelUtils {
             }
             return pointsOfServiceList;
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return pointsOfServiceList;
     }

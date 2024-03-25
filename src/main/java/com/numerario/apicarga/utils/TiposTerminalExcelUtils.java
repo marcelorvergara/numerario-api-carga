@@ -4,6 +4,8 @@ import com.numerario.apicarga.entities.PontosAtendimentoEntity;
 import com.numerario.apicarga.entities.TipoTerminalEntity;
 import com.numerario.apicarga.repositories.PontosAtendimentoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Service
 public class TiposTerminalExcelUtils {
+
+    private static final Log LOGGER = LogFactory.getLog(TiposTerminalExcelUtils.class);
 
     @Autowired
     PontosAtendimentoRepository pontosAtendimentoRepository;
@@ -33,7 +37,7 @@ public class TiposTerminalExcelUtils {
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage());
         }
         return terminalTypesList;
     }

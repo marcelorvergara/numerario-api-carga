@@ -32,6 +32,9 @@ public class ConstantsLoadController {
     @Autowired
     MovimentacoesPontosAtendimentosService movimentacoesPontosAtendimentosService;
 
+    @Autowired
+    LancamentosPAService lancamentosPAService;
+
     @GetMapping("/load-users")
     public ResponseEntity<Object> loadUsersFromFile() {
         try {
@@ -72,16 +75,6 @@ public class ConstantsLoadController {
         }
     }
 
-    @GetMapping("load-tipos-operacao")
-    public ResponseEntity<Object> loadTiposOperacaoFromFile() {
-        try {
-            var resultTiposOperacao = this.tiposOperacaoService.executeTiposOperacaoService();
-            return ResponseEntity.status(HttpStatus.OK).body("Foram inseridos: " + resultTiposOperacao.size() + " tipos de operacao");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @GetMapping("load-saldos-iniciais")
     public ResponseEntity<Object> loadSaldosIniciaisFromFile() {
         try {
@@ -91,4 +84,27 @@ public class ConstantsLoadController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    // Sendo realizado de forma automática
+    @GetMapping("load-tipos-operacao")
+    public ResponseEntity<Object> loadTiposOperacaoFromFile() {
+        try {
+            var resultTiposOperacao = this.tiposOperacaoService.executeTiposOperacaoService();
+            return ResponseEntity.status(HttpStatus.OK).body("Foram inseridos: " + resultTiposOperacao.size() + " tipos de operacao");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    // Sendo realizado de forma automática
+    @GetMapping("load-lancamento-pa")
+    public ResponseEntity<Object> loadLancamentosPAsFromFile() {
+        try {
+            var resultTiposOperacao = this.lancamentosPAService.executeLancamentosPA("automatizados/lancamentos-pa/RPAA4355_00_RelOperacoesCaixa_20220913_144329_0529.CSV");
+            return ResponseEntity.status(HttpStatus.OK).body("Foram inseridos: " + resultTiposOperacao.size() + " tipos de operacao");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 }

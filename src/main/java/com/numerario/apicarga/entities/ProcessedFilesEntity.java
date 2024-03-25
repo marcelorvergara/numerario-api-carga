@@ -1,31 +1,30 @@
 package com.numerario.apicarga.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+@Entity(name = "ProcessedFiles")
+@Builder
 @Data
-@Entity(name = "Usuarios")
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Getter
-public class UsuariosEntity {
+public class ProcessedFilesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "IDUSUARIO", nullable = false, unique = true)
-    private String idUsuario;
+    @Column(name = "FILE_NAME")
+    String fileName;
 
-    @Column(name = "IDUNIDADEINSTUSUARIO", nullable = false)
-    private int idUnidadeInstUsuario;
-
-    @Column(name = "DESCNOMEUSUARIO")
-    private String descUserName;
+    @Enumerated(EnumType.STRING)
+    FileStatus fileStatus = FileStatus.NOVO;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
