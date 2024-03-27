@@ -1,15 +1,12 @@
 package com.numerario.apicarga.entities;
 
 import com.numerario.apicarga.entities.composite_keys.TiposOperacaoId;
+import com.numerario.apicarga.entities.enums.SensibilizacaoTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -31,12 +28,6 @@ public class TiposOperacaoEntity {
     @Column(name = "DescricaoHistorico", nullable = false)
     private String descricaoHistorico;
 
-    @Column(name = "Sensibilizacao", nullable = false)
-    private String sensibilizacao;
-
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    @Enumerated(EnumType.STRING)
+    private SensibilizacaoTypeEnum sensibilizacao;
 }

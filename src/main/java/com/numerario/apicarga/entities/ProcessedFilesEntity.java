@@ -1,5 +1,6 @@
 package com.numerario.apicarga.entities;
 
+import com.numerario.apicarga.entities.enums.FileStatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +25,7 @@ public class ProcessedFilesEntity {
     String fileName;
 
     @Enumerated(EnumType.STRING)
-    FileStatus fileStatus = FileStatus.NOVO;
+    FileStatusEnum fileStatusEnum = FileStatusEnum.NOVO;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

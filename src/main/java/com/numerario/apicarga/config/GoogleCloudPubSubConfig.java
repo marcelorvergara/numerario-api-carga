@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
-import com.numerario.apicarga.entities.FileStatus;
+import com.numerario.apicarga.entities.enums.FileStatusEnum;
 import com.numerario.apicarga.services.LancamentosPAService;
 import com.numerario.apicarga.services.TiposOperacaoService;
 import org.apache.commons.logging.Log;
@@ -75,9 +75,9 @@ public class GoogleCloudPubSubConfig {
             LOGGER.info("Lançamento: " + lancamentosFileName.split("/")[2] + " encontrado. Iniciando processamento...");
             try {
                 insertLancamentosPAs(lancamentosFileName);
-                processedFileInterface.updateFileProcessStatus(lancamentosFileName, FileStatus.FINALIZADO);
+                processedFileInterface.updateFileProcessStatus(lancamentosFileName, FileStatusEnum.FINALIZADO);
             } catch (Exception e) {
-                processedFileInterface.updateFileProcessStatus(lancamentosFileName, FileStatus.FALHA);
+                processedFileInterface.updateFileProcessStatus(lancamentosFileName, FileStatusEnum.FALHA);
                 throw e;
             }
         } else {

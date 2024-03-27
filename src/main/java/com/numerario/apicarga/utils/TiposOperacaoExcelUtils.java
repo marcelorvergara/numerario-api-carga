@@ -2,6 +2,7 @@ package com.numerario.apicarga.utils;
 
 import com.numerario.apicarga.entities.TiposOperacaoEntity;
 import com.numerario.apicarga.entities.composite_keys.TiposOperacaoId;
+import com.numerario.apicarga.entities.enums.SensibilizacaoTypeEnum;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.ss.usermodel.*;
@@ -73,7 +74,7 @@ public class TiposOperacaoExcelUtils {
     }
 
     private String getStringValue(Cell cell) {
-        return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
+        return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "0";
     }
 
     private TiposOperacaoEntity createTiposOperacaoEntity(int idGrupoCaixa, int idOperacaoCaixa, String operacao, String descricaoOperacao, int historico, String descricaoHistorico, String sensibilizacao) {
@@ -87,7 +88,7 @@ public class TiposOperacaoExcelUtils {
                 .operacao(operacao)
                 .descricaoOperacao(descricaoOperacao)
                 .descricaoHistorico(descricaoHistorico)
-                .sensibilizacao(sensibilizacao)
+                .sensibilizacao(SensibilizacaoTypeEnum.fromCode(sensibilizacao))
                 .build();
     }
 }

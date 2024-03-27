@@ -6,6 +6,8 @@ import com.google.cloud.storage.Storage;
 import com.numerario.apicarga.entities.MovimentacoesPontosAtendimentoEntity;
 import com.numerario.apicarga.entities.TerminaisEntity;
 import com.numerario.apicarga.entities.TiposOperacaoEntity;
+import com.numerario.apicarga.entities.composite_keys.TiposOperacaoId;
+import com.numerario.apicarga.entities.enums.SensibilizacaoTypeEnum;
 import com.numerario.apicarga.repositories.MovimentacoesPontosAtendimentosRepository;
 import com.numerario.apicarga.repositories.TerminaisRepository;
 import com.numerario.apicarga.repositories.TiposOperacaoRepository;
@@ -24,6 +26,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +39,6 @@ public class LancamentosPAService {
 
     @Value("${gcs.bucket.name}")
     private String bucketName;
-
 
     @Autowired
     MovimentacoesPontosAtendimentosRepository movimentacoesPontosAtendimentosRepository;
@@ -62,26 +64,30 @@ public class LancamentosPAService {
             throw new RuntimeException("File: " + lancamentoFileName + " not found");
         }
 
+        Set<TiposOperacaoId> operacoesValidas = tiposOperacaoRepository.findAllBySensibilizacaoNot(SensibilizacaoTypeEnum.NEUTRO)
+                .stream()
+                .map(TiposOperacaoEntity::getId)
+                .collect(Collectors.toSet());
+
         try (var reader = new BufferedReader(Channels.newReader(blob.reader(), StandardCharsets.UTF_8))) {
-            List<MovimentacoesPontosAtendimentoEntity> entities;
-            entities = reader.lines().parallel()
-                    .map(this::convertCsvLineToEntity)
+            List<MovimentacoesPontosAtendimentoEntity> movimentacoesPAList;
+            movimentacoesPAList = reader.lines().parallel()
+                    .map(line -> convertCsvLineToEntity(line, operacoesValidas))
                     .filter(Objects::nonNull)
                     .toList();
 
-            return movimentacoesPontosAtendimentosRepository.saveAll(entities);
+            return movimentacoesPontosAtendimentosRepository.saveAll(movimentacoesPAList);
         } catch (IOException e) {
             throw new RuntimeException("Faild to read file: " + e.getMessage());
         }
     }
 
-    private MovimentacoesPontosAtendimentoEntity convertCsvLineToEntity(String csvLine) {
+    private MovimentacoesPontosAtendimentoEntity convertCsvLineToEntity(String csvLine, Set<TiposOperacaoId> operacoesValidas) {
         String[] parts = csvLine.split(",");
-
-        return processLancamentos(parts);
+        return processLancamentos(parts, operacoesValidas);
     }
 
-    private MovimentacoesPontosAtendimentoEntity processLancamentos(String[] parts) {
+    private MovimentacoesPontosAtendimentoEntity processLancamentos(String[] parts, Set<TiposOperacaoId> operacoesValidas) {
         // int[] desiredColumns = {2, 5, 9, 10, 11, 13, 17};
         String data = parts[2];
         String terminal = parts[5];
@@ -90,12 +96,24 @@ public class LancamentosPAService {
         int historico = Integer.parseInt(parts[13]);
         BigDecimal valor = new BigDecimal(parts[17]);
 
-        if((idGrupoCaixa == 92) && ((idOperacaoCaixa == 2) || (idOperacaoCaixa == 8) || (idOperacaoCaixa == 29)) && (historico == 1 || historico == 343)){
+
+        //        if((idGrupoCaixa == 92) && ((idOperacaoCaixa == 2) || (idOperacaoCaixa == 8) || (idOperacaoCaixa == 29)) && (historico == 1 || historico == 343)){
+        //            TiposOperacaoEntity tipoOperacaoEntity = findTipoOperacaoEntity(idGrupoCaixa, idOperacaoCaixa, historico);
+        //            TerminaisEntity terminalEntity = findTerminalEntity(terminal);
+        //            return createLancamentoPA(tipoOperacaoEntity, terminalEntity, data, valor);
+        //        }
+
+        if (isOperacaoValida(idGrupoCaixa, idOperacaoCaixa, historico, operacoesValidas)) {
             TiposOperacaoEntity tipoOperacaoEntity = findTipoOperacaoEntity(idGrupoCaixa, idOperacaoCaixa, historico);
             TerminaisEntity terminalEntity = findTerminalEntity(terminal);
             return createLancamentoPA(tipoOperacaoEntity, terminalEntity, data, valor);
         }
         return null;
+    }
+
+    private boolean isOperacaoValida(int idGrupoCaixa, int idOperacaoCaixa, int historico, Set<TiposOperacaoId> operacoesValidas) {
+        LOGGER.info(operacoesValidas.contains(new TiposOperacaoId(idGrupoCaixa, idOperacaoCaixa, historico)));
+        return operacoesValidas.contains(new TiposOperacaoId(idGrupoCaixa, idOperacaoCaixa, historico));
     }
 
     private TerminaisEntity findTerminalEntity(String terminal) {
